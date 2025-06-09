@@ -1,6 +1,7 @@
 import requests
 from config.config import BASE_URL, API_KEY
 import logging
+from exceptions.api_exceptions import ApiException, UnauthorizedException, NotFoundException, ServerErrorException
 
 
 class BaseClient:
@@ -12,7 +13,7 @@ class BaseClient:
         }
         self.logger = logging.getLogger(self.__class__.__name__)
 
-    def _make_request(self, method: str, endpoint: str, **kwargs):
+    def _make_request(self, method: str, endpoint: str, raise_on_error: bool = True, **kwargs):
         url = f"{self.base_url}{endpoint}"
         if "headers" not in kwargs:
             kwargs["headers"] = self.headers
@@ -34,6 +35,16 @@ class BaseClient:
             self.logger.info(f"Response JSON: {response.json()}")
         except ValueError:
             self.logger.info(f"Response text: {response.text}")
+
+        if raise_on_error:
+            if response.status_code == 401:
+                raise UnauthorizedException("Unauthorized access (401).")
+            elif response.status_code == 404:
+                raise NotFoundException("Resource not found (404).")
+            elif 500 <= response.status_code < 600:
+                raise ServerErrorException(f"Server error ({response.status_code}).")
+            elif response.status_code >= 400:
+                raise ApiException(f"Unexpected error: {response.status_code} - {response.text}")
 
         return response
 
