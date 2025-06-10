@@ -1,7 +1,10 @@
+from models import LoginResponse
+
+
 def test_successful_login(client):
     response = client.login(email="eve.holt@reqres.in", password="cityslicka")
-    assert response.status_code == 200, f"При попытке логина - вернулся {response.status_code} статус-код"
-    assert "token" in response.json()
+    assert isinstance(response, LoginResponse)
+    assert response.token
 
 
 def test_login_missing_password(client):

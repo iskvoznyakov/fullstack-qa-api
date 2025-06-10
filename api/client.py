@@ -1,12 +1,16 @@
 import requests
-
 from api.base_client import BaseClient
+from models import LoginResponse
 
 
 class ReqresClient(BaseClient):
-    def login(self, email: str, password: str, raise_on_error: bool = True) -> requests.Response:
+    def login(self, email: str, password: str, raise_on_error: bool = True) -> LoginResponse | requests.Response:
         data = {"email": email, "password": password}
-        return self.post(endpoint="/login", json=data, raise_on_error=raise_on_error)
+        response = self.post(endpoint="/login", json=data, raise_on_error=raise_on_error)
+
+        if raise_on_error:
+            return LoginResponse(**response.json())
+        return response
 
     def register(self, email: str, password: str, raise_on_error: bool = True) -> requests.Response:
         data = {"email": email, "password": password}
