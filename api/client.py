@@ -1,6 +1,6 @@
 import requests
 from api.base_client import BaseClient
-from models import LoginResponse, CreateResponse
+from models import LoginResponse, CreateResponse, GetResponse
 
 
 class ReqresClient(BaseClient):
@@ -25,4 +25,11 @@ class ReqresClient(BaseClient):
 
         if raise_on_error:
             return CreateResponse(**response.json())
+        return response
+
+    def get_user_by_id(self, user_id: int, raise_on_error: bool = True):
+        response = self.get(endpoint=f"/users/{user_id}", raise_on_error=raise_on_error)
+
+        if raise_on_error:
+            return GetResponse(**response.json())
         return response
