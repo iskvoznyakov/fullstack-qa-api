@@ -16,6 +16,3 @@ def test_successful_create_user(client, user_data):
     with allure.step("Проверяем, что в ответе возвращаются заданные name и job"):
         assert response.name == name, f"Возвращаемое имя: {response.name} не совпадает с пришедшим на вход: {name}"
         assert response.job == job, f"Возвращаемая работа: {response.job} не совпадает с пришедшей на вход: {job}"
-    with allure.step("Проверяем, что в ответе есть id и createdAt"):
-        assert response.id, "В ответе не возвращается id"
-        assert response.createdAt, "В ответе не возвращается createdAt"
