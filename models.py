@@ -30,3 +30,9 @@ class GetResponseData(BaseModel):
 class GetResponse(BaseModel):
     data: GetResponseData
     support: GetResponseSupport
+
+
+class UserUpdatePutResponse(BaseModel):
+    name: str
+    job: str
+    updatedAt: datetime.datetime
