@@ -1,6 +1,6 @@
 import requests
 from api.base_client import BaseClient
-from models import LoginResponse, CreateResponse, GetResponse
+from models import LoginResponse, CreateResponse, GetResponse, UserUpdatePutResponse
 
 
 class ReqresClient(BaseClient):
@@ -27,9 +27,18 @@ class ReqresClient(BaseClient):
             return CreateResponse(**response.json())
         return response
 
-    def get_user_by_id(self, user_id: int, raise_on_error: bool = True):
+    def get_user_by_id(self, user_id: int, raise_on_error: bool = True) -> GetResponse | requests.Response:
         response = self.get(endpoint=f"/users/{user_id}", raise_on_error=raise_on_error)
 
         if raise_on_error:
             return GetResponse(**response.json())
+        return response
+
+    def update_user_by_id_with_put(self, user_id: int, name: str, job: str,
+                                   raise_on_error: bool = True) -> UserUpdatePutResponse | requests.Response:
+        data = {"name": name, "job": job}
+        response = self.put(endpoint=f"/users/{user_id}", json=data, raise_on_error=raise_on_error)
+
+        if raise_on_error:
+            return UserUpdatePutResponse(**response.json())
         return response
